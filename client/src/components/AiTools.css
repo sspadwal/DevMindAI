@@ -1,0 +1,92 @@
+/* Main section */
+
+.ai-tools-section {
+    padding: 1rem;
+    margin: 3rem 0;
+}
+
+@media (min-width: 640px) {
+    .ai-tools-section {
+        padding: 0 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .ai-tools-section {
+        padding: 0 4rem;
+    }
+}
+
+
+/* Header styles */
+
+.ai-tools-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.ai-tools-main-title {
+    color: #1e293b;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.ai-tools-title-highlight {
+    background: linear-gradient(to right, #4f46e5, #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.ai-tools-subheading {
+    color: #64748b;
+    max-width: 32rem;
+    margin: 0 auto;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+
+/* Grid layout */
+
+.ai-tools-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 2rem;
+}
+
+
+/* Responsive breakpoints */
+
+
+/* Mobile (1 column) - default style covers this */
+
+
+/* Small devices (2 columns) */
+
+@media (min-width: 640px) {
+    .ai-tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+}
+
+
+/* Large devices (3 columns) */
+
+@media (min-width: 1024px) {
+    .ai-tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+/* Special case for exactly 6 items to maintain 2x3 grid on tablets */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    .ai-tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

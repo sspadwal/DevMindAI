@@ -1,0 +1,170 @@
+/* Card container */
+
+.ai-tool-card {
+    position: relative;
+    padding: 1.5rem;
+    width: 100%;
+    border-radius: 1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    /* Ensure equal height */
+}
+
+@media (min-width: 640px) {
+    .ai-tool-card {
+        width: 20rem;
+    }
+}
+
+
+/* Card effects */
+
+.ai-tool-card-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( to bottom right, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ai-tool-card:hover .ai-tool-card-hover-overlay {
+    opacity: 1;
+}
+
+.ai-tool-card-border-effect {
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    border: 2px solid transparent;
+    transition: all 0.5s ease;
+}
+
+.ai-tool-card:hover .ai-tool-card-border-effect {
+    border-color: rgba(199, 210, 254, 0.5);
+}
+
+
+/* Particles */
+
+.ai-tool-card-particle {
+    position: absolute;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: rgba(99, 102, 241, 0.3);
+    pointer-events: none;
+}
+
+
+/* Card content */
+
+.ai-tool-card-content {
+    position: relative;
+    z-index: 10;
+}
+
+
+/* Icon styles */
+
+.ai-tool-icon-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.ai-tool-icon-background {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-tool-icon-shine-effect {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(12deg);
+}
+
+.ai-tool-icon {
+    width: 2rem;
+    height: 2rem;
+    color: white;
+    position: relative;
+    z-index: 10;
+}
+
+.ai-tool-icon-glow-effect {
+    position: absolute;
+    inset: 0;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.75rem;
+    filter: blur(12px);
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.ai-tool-card:hover .ai-tool-icon-glow-effect {
+    opacity: 0.5;
+}
+
+
+/* Text styles */
+
+.ai-tool-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+    transition: color 0.3s ease;
+}
+
+.ai-tool-card:hover .ai-tool-title {
+    color: #4f46e5;
+}
+
+.ai-tool-description {
+    color: #64748b;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.ai-tool-card:hover .ai-tool-description {
+    color: #475569;
+}
+
+
+/* CTA Button */
+
+.ai-tool-cta-button {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4f46e5;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.ai-tool-card:hover .ai-tool-cta-button {
+    opacity: 1;
+}
+
+.ai-tool-cta-arrow {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+}
