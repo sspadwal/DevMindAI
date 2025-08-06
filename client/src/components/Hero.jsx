@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
-import "./hero.css";
+import "./Hero.css";
 
 const Hero = () => {
   const navigate = useNavigate();
