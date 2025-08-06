@@ -12,7 +12,7 @@ await connectCloudinary();
 app.use(express.json())
     // Enable CORS
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://192.168.29.139:5173'], // Add your network IP
+    origin: ['http://localhost:5173', 'https://devmindai.vercel.app'], // Add your network IP
     credentials: true
 }));
 // Log all incoming requests (headers and body)
