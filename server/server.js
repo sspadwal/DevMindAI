@@ -1,71 +1,96 @@
-import express from 'express'
-import cors from 'cors'
+import express from 'express';
+import cors from 'cors';
 import 'dotenv/config';
-import { clerkMiddleware, clerkClient, requireAuth, getAuth } from '@clerk/express'
+import { clerkMiddleware, requireAuth } from '@clerk/express';
 import aiRouter from './routes/aiRoutes.js';
-import connectCloudinary from './configs/cloudnary.js';
 import userRouter from './routes/userRoutes.js';
+import connectCloudinary from './configs/cloudnary.js';
 
 const app = express();
+
+// 1. Connect to Cloudinary
 await connectCloudinary();
 
-// Parse JSON bodies first
-app.use(express.json())
-
-// Enhanced CORS configuration
-const allowedOrigins = [
-  'https://dev-mind-ai.vercel.app', // Your actual frontend domain
-  'https://devmindai.vercel.app',   // Previous domain
-  'http://localhost:5173'           // For local development
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+// 2. Strict CORS Configuration (Single Origin)
+const corsOptions = {
+  origin: 'https://devmindai.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept'
+  ],
   credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
+  optionsSuccessStatus: 200
+};
 
-// Handle preflight requests
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Explicit preflight handling
 
-// Log all incoming requests (headers and body)
+// 3. Middleware Pipeline
+app.use(express.json({ limit: '10mb' })); // Increased payload limit
+app.use(express.urlencoded({ extended: true }));
+
+// 4. Enhanced Request Logging
 app.use((req, res, next) => {
-    console.log('--- Incoming Request ---');
-    console.log('Method:', req.method);
-    console.log('Path:', req.path);
-    console.log('Origin:', req.headers.origin);
-    console.log('Headers:', req.headers);
-    if (Object.keys(req.body).length > 0) {
-      console.log('Body:', req.body);
-    }
-    next();
+  console.log('\n=== Incoming Request ===');
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log('Origin:', req.headers.origin);
+  console.log('Auth:', req.headers.authorization ? 'Present' : 'Missing');
+  next();
 });
 
-// Clerk middleware for authentication
-app.use(clerkMiddleware())
+// 5. Clerk Authentication
+app.use(clerkMiddleware());
 
-app.get('/', (req, res) => res.send("Server is Live"))
+// 6. Health Check Route (Public)
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    allowedOrigin: corsOptions.origin
+  });
+});
 
-// Require authentication for all routes after this
-app.use(requireAuth())
-app.use('/api/ai', aiRouter)
-app.use('/api/user', userRouter)
+// 7. Protected Routes
+app.use('/api/ai', requireAuth(), aiRouter);
+app.use('/api/user', requireAuth(), userRouter);
 
+// 8. Error Handling
+app.use((err, req, res, next) => {
+  console.error('\n!!! Error Handler !!!');
+  console.error(err.stack);
+
+  if (err.name === 'CORSError') {
+    return res.status(403).json({
+      error: 'Forbidden',
+      message: 'Origin not allowed',
+      allowedOrigin: corsOptions.origin
+    });
+  }
+
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
+});
+
+// 9. Server Startup
 const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log('\n=== Server Information ===');
+  console.log(`Server   : http://localhost:${PORT}`);
+  console.log(`Frontend : ${corsOptions.origin}`);
+  console.log(`Environment : ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Started at : ${new Date().toISOString()}`);
+});
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running at http://0.0.0.0:${PORT}`);
-    console.log('Allowed Origins:', allowedOrigins);
+// 10. Graceful Shutdown
+process.on('SIGTERM', () => {
+  console.log('\nSIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    console.log('Server terminated');
+    process.exit(0);
+  });
 });
